@@ -7,6 +7,11 @@
 </head>
 <body>
     <h1>Network</h1>
+    {% if messages %}
+        {% for message in messages%}   
+            <li>{{message}}</li>     
+        {% endfor%}
+    {% endif %}
     {% block body %}
     {% endblock body %}
 </body>
