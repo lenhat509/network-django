@@ -1,0 +1,14 @@
+{% extends 'users/layout.html' %}
+{% load crispy_forms_tags %}
+{% block body %}
+    <h1>Profile</h1>
+    <img src="{{ user.profile.image.url }}" alt="" class="round-avatar">
+    <h5>Username: {{user.username}}</h5>
+    <h5>Email: {{user.email}}</h5>
+    <form action="" method="POST" enctype='multipart/form-data'>
+        {% csrf_token %}
+        {{ u_form|crispy }}
+        {{ p_form|crispy }}        
+        <input type="submit">
+    </form>
+{% endblock body %}
