@@ -1,9 +1,10 @@
 {% extends 'users/layout.html' %}
+{% load crispy_forms_tags %}
 {% block body %}
     <h1>Register</h1>
     <form action="" method="POST">
         {% csrf_token %}
-        {{ form }}
+        {{ form|crispy }}
         <input type="submit">
     </form>
 {% endblock body %}
