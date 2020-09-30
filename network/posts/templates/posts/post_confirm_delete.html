@@ -1,0 +1,12 @@
+{% extends 'users/layout.html' %}
+{% load crispy_forms_tags %}
+{% block body %}
+    <h2>Delete Post</h2>
+    <form action="" method="POST">
+        {% csrf_token %}
+        <h5>Do you want to delete "{{object.title}}" ?</h5>
+        {{ form|crispy }}
+        <a href="{% url 'post-detail' object.id%}">Cancel</a>
+        <input type="submit" value='Delete'>
+    </form>
+{% endblock body %}

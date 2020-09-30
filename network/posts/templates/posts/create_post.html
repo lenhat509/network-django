@@ -1,0 +1,10 @@
+{% extends 'users/layout.html' %}
+{% load crispy_forms_tags %}
+{% block body %}
+    <h2>Create Post</h2>
+    <form action="" method="POST">
+        {% csrf_token %}
+        {{ form|crispy }}
+        <input type="submit" value='Create'>
+    </form>
+{% endblock body %}
