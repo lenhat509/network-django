@@ -1,11 +1,11 @@
 {% extends 'users/layout.html' %}
 {% load tz %}
 {% block body %}
-    <h2>Home</h2>
+    <h2>Posts of {{user.username}}</h2>
     {% if posts %}
         {% for post in posts %}
         <div>
-            <a href="{% url 'user-posts' post.author.username %}">{{ post.author.username }}</a> <br>
+            {{ post.author.username }} <br>
             {{ post.date_posted|localtime|date:'M d, Y H:i'}} <br>
             <a href="{% url 'post-detail' post.id %}">{{ post.title }}</a> <br>
             {{ post.content }} <br>
