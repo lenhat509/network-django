@@ -3,7 +3,9 @@ from django.views.generic import ListView, CreateView, UpdateView, DeleteView, D
 from . models import Post
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.models import User
-
+from django.contrib.auth.decorators import login_required
+from django.http import JsonResponse
+import json
 # Create your views here.
 class PostListView(LoginRequiredMixin, ListView):
     model = Post
@@ -52,3 +54,24 @@ class PostDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
         if self.get_object().author == self.request.user:
             return True
         return False
+
+
+@login_required
+def handleToggleLike(request):
+    data = json.loads(request.body.decode('utf-8'))
+    if data and data['post_id']:
+        post = Post.objects.filter(pk=data['post_id']).first()
+        if request.user in post.likes.all():
+            post.likes.remove(request.user)
+            liked = False
+        else: 
+            post.likes.add(request.user)
+            liked = True
+        return JsonResponse({
+            'success': True,
+            'res' : {
+                'liked': liked,
+                'number_likes': post.likes.count()
+            }
+        })
+    return JsonResponse({'success': True,'alert': 'inappropriate input'})

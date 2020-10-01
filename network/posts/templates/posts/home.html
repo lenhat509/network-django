@@ -4,11 +4,19 @@
     <h2>Home</h2>
     {% if posts %}
         {% for post in posts %}
-        <div>
+        <div class="post" data-id='{{post.id}}'>
             <a href="{% url 'user-posts' post.author.username %}">{{ post.author.username }}</a> <br>
             {{ post.date_posted|localtime|date:'M d, Y H:i'}} <br>
             <a href="{% url 'post-detail' post.id %}">{{ post.title }}</a> <br>
             {{ post.content }} <br>
+            <button id='toggle-like'>
+                {% if user in post.likes.all %}
+                    Liked
+                {% else %}
+                    Like
+                {% endif %}
+            </button>
+            <span id="number-likes">{{post.likes.count}}</span>
         </div>
         <hr>
         {% endfor %}
