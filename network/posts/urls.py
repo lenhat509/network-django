@@ -7,5 +7,6 @@ urlpatterns = [
     path('post/<int:pk>/', views.PostDetailView.as_view(), name='post-detail'),
     path('post/new/', views.CreatePostView.as_view(), name='new-post'),
     path('post/<int:pk>/update/', views.UpdatePostView.as_view(), name='update-post'),
-    path('post/<int:pk>/delete/', views.PostDeleteView.as_view(), name='delete-post')
+    path('post/<int:pk>/delete/', views.PostDeleteView.as_view(), name='delete-post'),
+    path('api/like/', views.handleToggleLike)
 ]
