@@ -2,11 +2,19 @@
 {% load tz %}
 {% block body %}
     <h2>Post Detail</h2>
-    <div>
+    <div class="post" data-id='{{post.id}}'>
         <a href="{% url 'user-posts' post.author.username %}">{{ post.author.username }}</a> <br>
         {{ post.date_posted|localtime|date:'M d, Y H:i'}} <br>
         {{ post.title }} <br>
         {{ post.content }} <br>
+        <button id='toggle-like'>
+            {% if user in post.likes.all %}
+                Liked
+            {% else %}
+                Like
+            {% endif %}
+        </button>
+        <span id="number-likes">{{post.likes.count}}</span>
     </div>
     {% if user == post.author %}
         <a href="{% url 'update-post' post.id %}">Update</a>
