@@ -1,8 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('.post').forEach( post => {
-        console.log('each post')
         post.querySelector('#toggle-like').onclick =  () => {
-            console.log('post', post.dataset.id)
             const data = {
                 method: "POST",
                 credentials:'same-origin',

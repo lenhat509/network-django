@@ -17,6 +17,8 @@
                 {% endif %}
             </button>
             <span id="number-likes">{{post.likes.count}}</span>
+            <a href="{% url 'post-detail' post.id %}">Comment</a>
+            <span id='number-comments'>{{post.comments.count}}</span>
         </div>
         <hr>
         {% endfor %}
