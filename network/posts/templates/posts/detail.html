@@ -1,15 +1,52 @@
 {% extends 'users/layout.html' %}
+{% load crispy_forms_tags %}
 {% load tz %}
 {% block body %}
     <h2>Post Detail</h2>
-    <div>
+    <div class="post" data-id='{{post.id}}'>
         <a href="{% url 'user-posts' post.author.username %}">{{ post.author.username }}</a> <br>
         {{ post.date_posted|localtime|date:'M d, Y H:i'}} <br>
         {{ post.title }} <br>
         {{ post.content }} <br>
+        <button id='toggle-like'>
+            {% if user in post.likes.all %}
+                Liked
+            {% else %}
+                Like
+            {% endif %}
+        </button>
+        <span id="number-likes">{{post.likes.count}}</span>
     </div>
     {% if user == post.author %}
         <a href="{% url 'update-post' post.id %}">Update</a>
         <a href="{% url 'delete-post' post.id %}">Delete</a>
     {% endif %}
+    <h1>Comments</h1>
+    {% if comments %}
+        {% for post in comments %}
+        <div class="post" data-id='{{post.id}}'>
+            <a href="{% url 'user-posts' post.author.username %}">{{ post.author.username }}</a> <br>
+            {{ post.date_posted|localtime|date:'M d, Y H:i'}} <br>
+            <a href="{% url 'post-detail' post.id %}">{{ post.title }}</a> <br>
+            {{ post.content }} <br>
+            <button id='toggle-like'>
+                {% if user in post.likes.all %}
+                    Liked
+                {% else %}
+                    Like
+                {% endif %}
+            </button>
+            <span id="number-likes">{{post.likes.count}}</span>
+            <a href="{% url 'post-detail' post.id %}">Comment</a>
+            <span id='number-comments'>{{post.comments.count}}</span>
+        </div>
+        <hr>
+        {% endfor %}
+    {% endif %}
+    <h1>Your comment</h1>
+    <form action="" method="POST">
+        {% csrf_token %}
+        {{ form|crispy }}
+        <input type="submit" value='Reply'>
+    </form>
 {% endblock body %}

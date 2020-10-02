@@ -1,14 +1,24 @@
 {% extends 'users/layout.html' %}
 {% load tz %}
 {% block body %}
-    <h2>Posts of {{user.username}}</h2>
+    <h2>Posts of {{view.kwargs.username}}</h2>
     {% if posts %}
         {% for post in posts %}
-        <div>
+        <div class="post" data-id='{{post.id}}'>
             {{ post.author.username }} <br>
             {{ post.date_posted|localtime|date:'M d, Y H:i'}} <br>
             <a href="{% url 'post-detail' post.id %}">{{ post.title }}</a> <br>
             {{ post.content }} <br>
+            <button id='toggle-like'>
+                {% if user in post.likes.all %}
+                    Liked
+                {% else %}
+                    Like
+                {% endif %}
+            </button>
+            <span id="number-likes">{{post.likes.count}}</span>
+            <a href="{% url 'post-detail' post.id %}">Comment</a>
+            <span id='number-comments'>{{post.comments.count}}</span>
         </div>
         <hr>
         {% endfor %}
