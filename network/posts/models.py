@@ -10,7 +10,7 @@ class Post(models.Model):
     date_posted = models.DateTimeField(default=timezone.now)
     author = models.ForeignKey(User, on_delete=models.CASCADE)
     likes = models.ManyToManyField(User, related_name='interesting_posts', blank=True)
-    comment_to = models.ForeignKey('self', related_name='comments',blank=True, null=True, on_delete=models.CASCADE)
+    comment_to = models.ForeignKey('self', related_name='comments', blank=True, null=True, on_delete=models.CASCADE)
 
     def __str__(self):
         if self.comment_to:

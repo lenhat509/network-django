@@ -21,6 +21,11 @@ class UserPostListView(LoginRequiredMixin, ListView):
     model = Post
     template_name = 'posts/user_posts.html'
     context_object_name = 'posts'
+
+    def get_context_data(self):
+        context = super().get_context_data()
+        context['profile'] = get_object_or_404(User, username=self.kwargs['username']).profile
+        return context
     
     def get_queryset(self):
         user = get_object_or_404(User, username=self.kwargs['username'])
@@ -85,17 +90,40 @@ def handleToggleLike(request):
     data = json.loads(request.body.decode('utf-8'))
     if data and data['post_id']:
         post = Post.objects.filter(pk=data['post_id']).first()
-        if request.user in post.likes.all():
-            post.likes.remove(request.user)
-            liked = False
-        else: 
-            post.likes.add(request.user)
-            liked = True
-        return JsonResponse({
-            'success': True,
-            'res' : {
-                'liked': liked,
-                'number_likes': post.likes.count()
-            }
-        })
+        if post is not None:
+            if request.user in post.likes.all():
+                post.likes.remove(request.user)
+                liked = False
+            else: 
+                post.likes.add(request.user)
+                liked = True
+            return JsonResponse({
+                'success': True,
+                'res' : {
+                    'liked': liked,
+                    'number_likes': post.likes.count()
+                }
+            })
     return JsonResponse({'success': True,'alert': 'inappropriate input'})
+
+@login_required
+def handleToggleFollow(request):
+    data = json.loads(request.body.decode('utf-8'))
+    if data and data['username']:
+        profile = User.objects.filter(username=data['username']).first().profile
+        c_profile = request.user.profile
+        if profile is not None and profile != c_profile:
+            if c_profile in profile.followers.all():
+                profile.followers.remove(c_profile)
+                following = False
+            else :
+                profile.followers.add(c_profile)
+                following = True
+            return JsonResponse({
+                'success': True,
+                'res': {
+                    'following': following,
+                    'followers': profile.followers.count()
+                }
+            })
+    return JsonResponse({'success': False})
