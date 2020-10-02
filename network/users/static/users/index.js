@@ -20,4 +20,27 @@ document.addEventListener('DOMContentLoaded', () => {
             })
         }
     })
+
+    document.querySelector('#toggle-follow').onclick = (e) => {
+        const data = {
+            method : "POST",
+            credentials: 'same-origin',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': document.cookie.split(';').find( c => c.startsWith('csrftoken')).split('=')[1]
+            },
+            body: JSON.stringify({
+                username: e.target.dataset.username
+            })
+        }
+        fetch('http://127.0.0.1:8000/api/follow/', data)
+        .then(res => res.json())
+        .then(data => {
+            if(data.success) {
+                e.target.innerHTML = data.res.following? 'Unfollow': 'Follow'
+                document.querySelector('#followers').innerHTML = data.res.followers
+            }
+        })
+    }
+
 })

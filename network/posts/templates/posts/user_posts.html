@@ -1,6 +1,21 @@
 {% extends 'users/layout.html' %}
 {% load tz %}
 {% block body %}
+    <h2>Profile</h2>
+    <img src="{{ profile.image.url }}" alt="" class='round-avatar'>
+    <h5>Username : {{profile.user.username}}</h5>
+    <h5>Email    : {{profile.user.email}}</h5>
+    <h5>Following {{profile.following.count}}</h5>
+    <h5>Followers <span id='followers'>{{profile.followers.count}}</span></h5>
+    {% if user.is_authenticated and user != profile.user %}
+    <button id='toggle-follow' data-username='{{profile.user.username}}'>
+        {% if user.profile in profile.followers.all %}
+            Unfollow
+        {% else %}
+            Follow
+        {% endif %}
+    </button>
+    {% endif %}
     <h2>Posts of {{view.kwargs.username}}</h2>
     {% if posts %}
         {% for post in posts %}
