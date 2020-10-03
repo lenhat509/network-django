@@ -1,8 +1,7 @@
 {% extends 'users/layout.html' %}
 {% load tz %}
 {% block body %}
-    <h2>Home</h2>
-    <span>Page {{ page_obj.number }} of {{page_obj.paginator.num_pages}}</span>
+    <h2>Following</h2>
     {% if posts %}
         {% for post in posts %}
         <div class="post" data-id='{{post.id}}'>
