@@ -8,6 +8,7 @@ urlpatterns = [
     path('post/new/', views.CreatePostView.as_view(), name='new-post'),
     path('post/<int:pk>/update/', views.UpdatePostView.as_view(), name='update-post'),
     path('post/<int:pk>/delete/', views.PostDeleteView.as_view(), name='delete-post'),
+    path('post/following/', views.FollowingPostView.as_view(), name='following-posts'),
     path('api/like/', views.handleToggleLike),
     path('api/follow/', views.handleToggleFollow)
 ]

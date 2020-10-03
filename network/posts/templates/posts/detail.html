@@ -22,8 +22,8 @@
         <a href="{% url 'delete-post' post.id %}">Delete</a>
     {% endif %}
     <h1>Comments</h1>
-    {% if comments %}
-        {% for post in comments %}
+    {% if page_obj %}
+        {% for post in page_obj %}
         <div class="post" data-id='{{post.id}}'>
             <a href="{% url 'user-posts' post.author.username %}">{{ post.author.username }}</a> <br>
             {{ post.date_posted|localtime|date:'M d, Y H:i'}} <br>

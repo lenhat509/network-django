@@ -1,18 +1,22 @@
 from django.shortcuts import render, get_object_or_404
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView, DetailView
 from django.views.generic.edit import SingleObjectMixin
+from django.views.generic.list import MultipleObjectMixin
 from . models import Post
+from django.core.paginator import Paginator
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.urls import reverse
 import json
+
 # Create your views here.
 class PostListView(LoginRequiredMixin, ListView):
     model = Post
     template_name = 'posts/home.html'
     context_object_name = 'posts'
+    paginate_by = 10
 
     def get_queryset(self):
         return Post.objects.filter(comment_to=None).order_by('-date_posted')
@@ -21,6 +25,7 @@ class UserPostListView(LoginRequiredMixin, ListView):
     model = Post
     template_name = 'posts/user_posts.html'
     context_object_name = 'posts'
+    paginate_by = 10
 
     def get_context_data(self):
         context = super().get_context_data()
@@ -43,9 +48,11 @@ class PostDetailView(LoginRequiredMixin, CreateView, SingleObjectMixin):
         return super().form_valid(form)
 
     def get_context_data(self, **kwargs):
-        context = super(PostDetailView, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
         context['post'] = self.get_object()
-        context['comments'] = self.get_object().comments.order_by('-date_posted')
+        paginator = Paginator(self.get_object().comments.order_by('-date_posted'), 10)
+        page_obj = paginator.get_page(self.request.GET.get('page') if self.request.GET.get('page') else 1)
+        context['page_obj'] = page_obj
         return context
 
     def get_success_url(self):
@@ -84,6 +91,16 @@ class PostDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
         if self.get_object().comment_to:
             return reverse('post-detail', kwargs={'pk': self.get_object().comment_to.pk})
         return '/'
+    
+class FollowingPostView(LoginRequiredMixin, ListView):
+    model = Post
+    template_name = 'posts/following_posts.html'
+    context_object_name = 'posts'
+    paginate_by = 10
+    
+    def get_queryset(self):
+        following = self.request.user.profile.following.all()
+        return Post.objects.filter(author__profile__in=following).order_by('-date_posted')
 
 @login_required
 def handleToggleLike(request):
