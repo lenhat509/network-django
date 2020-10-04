@@ -51,7 +51,7 @@ class PostDetailView(LoginRequiredMixin, CreateView, SingleObjectMixin):
         context = super().get_context_data(**kwargs)
         context['post'] = self.get_object()
         paginator = Paginator(self.get_object().comments.order_by('-date_posted'), 10)
-        page_obj = paginator.get_page(self.request.GET.get('page') if self.request.GET.get('page') else 1)
+        page_obj = paginator.get_page(self.request.GET.get('page'))
         context['page_obj'] = page_obj
         return context
 
@@ -97,7 +97,7 @@ class FollowingPostView(LoginRequiredMixin, ListView):
     template_name = 'posts/following_posts.html'
     context_object_name = 'posts'
     paginate_by = 10
-    
+
     def get_queryset(self):
         following = self.request.user.profile.following.all()
         return Post.objects.filter(author__profile__in=following).order_by('-date_posted')

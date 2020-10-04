@@ -3,6 +3,9 @@
 {% load tz %}
 {% block body %}
     <h2>Post Detail</h2>
+    {% if post.comment_to %}
+    <a href="{% url 'post-detail' post.comment_to.id %}">@replyTo '{{post.comment_to.title}}'</a>
+    {% endif %}
     <div class="post" data-id='{{post.id}}'>
         <a href="{% url 'user-posts' post.author.username %}">{{ post.author.username }}</a> <br>
         {{ post.date_posted|localtime|date:'M d, Y H:i'}} <br>
