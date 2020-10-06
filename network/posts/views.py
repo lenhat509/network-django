@@ -10,8 +10,10 @@ from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.urls import reverse
 import json
-
+from django.views.decorators.cache import never_cache
+from django.utils.decorators import method_decorator
 # Create your views here.
+
 class PostListView(LoginRequiredMixin, ListView):
     model = Post
     template_name = 'posts/home.html'
@@ -36,6 +38,8 @@ class UserPostListView(LoginRequiredMixin, ListView):
         user = get_object_or_404(User, username=self.kwargs['username'])
         return Post.objects.filter(author=user, comment_to=None).order_by('-date_posted')
 
+
+@method_decorator(never_cache, name='post')
 class PostDetailView(LoginRequiredMixin, CreateView, SingleObjectMixin):
     model = Post
     template_name='posts/detail.html'
@@ -58,8 +62,7 @@ class PostDetailView(LoginRequiredMixin, CreateView, SingleObjectMixin):
     def get_success_url(self):
         return reverse('post-detail', kwargs={'pk': self.get_object().pk})
 
-        
-
+@method_decorator(never_cache, name='post')
 class CreatePostView(LoginRequiredMixin, CreateView):
     model = Post
     template_name = 'posts/create_post.html'
@@ -69,6 +72,8 @@ class CreatePostView(LoginRequiredMixin, CreateView):
         form.instance.author = self.request.user
         return super().form_valid(form)
 
+
+@method_decorator(never_cache, name='post')
 class UpdatePostView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Post
     template_name= 'posts/update_post.html'
@@ -79,6 +84,8 @@ class UpdatePostView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
             return True
         return False
 
+
+@method_decorator(never_cache, name='post')
 class PostDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     model = Post
 
