@@ -1,3 +1,4 @@
+
 document.addEventListener('DOMContentLoaded', () => {
     if(document.querySelectorAll('.post')) {
         document.querySelectorAll('.post').forEach( post => {
