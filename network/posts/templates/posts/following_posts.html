@@ -5,18 +5,25 @@
     {% if posts %}
         {% for post in posts %}
         <div class="post" data-id='{{post.id}}'>
-            <a href="{% url 'user-posts' post.author.username %}">{{ post.author.username }}</a> <br>
-            {{ post.date_posted|localtime|date:'M d, Y H:i'}} <br>
-            <a href="{% url 'post-detail' post.id %}">{{ post.title }}</a> <br>
-            {{ post.content }} <br>
-            <button id='toggle-like'>
+            <div class="flex-jc-sp">
+                <a href="{% url 'user-posts' post.author.username %}">{{ post.author.username }}</a> 
+                <span class="text-muted">{{ post.date_posted|localtime|date:'M d, Y H:i'}}</span> 
+            </div>
+            
+            <a class="text-muted" href="{% url 'post-detail' post.id %}">
+                <h4>
+                    {{ post.title }}
+                </h4>
+            </a>
+            <p>{{ post.content }} </p>
+            <button class="btn btn-outline-secondary" id='toggle-like'>
                 {% if user in post.likes.all %}
                     Liked
                 {% else %}
                     Like
                 {% endif %}
             </button>
-            <span id="number-likes">{{post.likes.count}}</span>
+            <span class="mr-2" id="number-likes">{{post.likes.count}}</span>
             <a href="{% url 'post-detail' post.id %}">Comment</a>
             <span id='number-comments'>{{post.comments.count}}</span>
         </div>
