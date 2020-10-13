@@ -2,13 +2,18 @@
 {% load tz %}
 {% block body %}
     <h2>Profile</h2>
-    <img src="{{ profile.image.url }}" alt="" class='round-avatar'>
-    <h5>Username : {{profile.user.username}}</h5>
-    <h5>Email    : {{profile.user.email}}</h5>
-    <h5>Following {{profile.following.count}}</h5>
-    <h5>Followers <span id='followers'>{{profile.followers.count}}</span></h5>
+    <div class="flex-ai-c">
+        <img src="{{ profile.image.url }}" alt="" class='round-avatar'>
+        <div class="ml-2">
+            <h5>Username : {{profile.user.username}}</h5>
+            <h5>Email    : {{profile.user.email}}</h5>
+        </div>
+    </div>
+    
+    <span>Following {{profile.following.count}}</span>
+    <span class="ml-2">Followers <span id='followers'>{{profile.followers.count}}</span></span>
     {% if user.is_authenticated and user != profile.user %}
-    <button id='toggle-follow' data-username='{{profile.user.username}}'>
+    <button class="btn btn-outline-primary" id='toggle-follow' data-username='{{profile.user.username}}'>
         {% if user.profile in profile.followers.all %}
             Unfollow
         {% else %}
@@ -20,18 +25,25 @@
     {% if posts %}
         {% for post in posts %}
         <div class="post" data-id='{{post.id}}'>
-            {{ post.author.username }} <br>
-            {{ post.date_posted|localtime|date:'M d, Y H:i'}} <br>
-            <a href="{% url 'post-detail' post.id %}">{{ post.title }}</a> <br>
-            {{ post.content }} <br>
-            <button id='toggle-like'>
+            <div class="flex-jc-sp">
+                <a href="{% url 'user-posts' post.author.username %}">{{ post.author.username }}</a> 
+                <span class="text-muted">{{ post.date_posted|localtime|date:'M d, Y H:i'}}</span> 
+            </div>
+            
+            <a class="text-muted" href="{% url 'post-detail' post.id %}">
+                <h4>
+                    {{ post.title }}
+                </h4>
+            </a>
+            <p>{{ post.content }} </p>
+            <button class="btn btn-outline-secondary" id='toggle-like'>
                 {% if user in post.likes.all %}
                     Liked
                 {% else %}
                     Like
                 {% endif %}
             </button>
-            <span id="number-likes">{{post.likes.count}}</span>
+            <span class="mr-2" id="number-likes">{{post.likes.count}}</span>
             <a href="{% url 'post-detail' post.id %}">Comment</a>
             <span id='number-comments'>{{post.comments.count}}</span>
         </div>
